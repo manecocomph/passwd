@@ -1,0 +1,10 @@
+{
+    "Mg": {
+        "Host": "127.0.0.1",
+        "Port": 27017,
+        "Database": "passwd"
+    },
+    "Serv": {
+        "port": 8080
+    }
+}
