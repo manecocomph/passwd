@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"passwd/config"
+	"passwd/export"
 	"passwd/impt"
 	serv "passwd/server"
 )
@@ -13,8 +14,9 @@ func main() {
 	flag.Bool("s", true, "start the server")
 	flag.Bool("i", false, "import files to MongoDB")
 	flag.Bool("t", false, "test if configuration is fine")
+	exportFlag := flag.String("x", "", "export use single | multiple thread")
 	flag.Parse()
-	var serverPresent, isImptPresent, isTstPresent bool
+	var serverPresent, isImptPresent, isTstPresent, isExportPresent bool
 
 	flag.Visit(func(fp *flag.Flag) {
 		//fmt.Printf("%s: %s  \t default: %s\n", fp.Name, fp.Value, fp.DefValue)
@@ -27,6 +29,10 @@ func main() {
 
 		if "t" == fp.Name {
 			isTstPresent = true
+		}
+
+		if "x" == fp.Name {
+			isExportPresent = true
 		}
 	})
 
@@ -48,10 +54,22 @@ func main() {
 		return
 	}
 
+	if isExportPresent {
+		if "single" == *exportFlag {
+			log.Println("starting export with single thread")
+			export.SingleThreadExportPassword()
+			return
+		} else if "multiple" == *exportFlag {
+			log.Println("starting export with multiple thread")
+			return
+		}
+	}
+
 	fmt.Println("Usage:")
 	fmt.Println("\t -s  start the web server")
 	fmt.Println("\t -t  test the config.json")
 	fmt.Println("\t -i  import the files")
+	fmt.Println("\t -x  export password  -x=single|multiple")
 	/*
 
 		knownImportMetaData := make([]impt.ImportMetaData, 3, 3)
